@@ -1,5 +1,9 @@
 package com.test.test3;
 
+import java.io.BufferedReader;
+import java.io.FileInputStream;
+import java.io.InputStreamReader;
+
 import android.os.Bundle;
 import android.app.Activity;
 import android.view.Menu;
@@ -13,6 +17,9 @@ import android.content.SharedPreferences;
 import android.os.Build;
 
 public class DisplayMessageActivity extends Activity {
+	
+	String file_content;
+	String line;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -29,16 +36,27 @@ public class DisplayMessageActivity extends Activity {
 	    TextView textView = (TextView) findViewById(R.id.message_shown);
 	    // Create the text view
 	    //TextView textView = new TextView(this);
-	    textView.setTextSize(40);
-	    textView.setText("2"+message+"\n");
+	    textView.setTextSize(20);
+	    textView.setText("message: "+message+"\n");
 	    
 	    String saved_message = MainActivity.getDefaults("saved", this);
-	   textView.append(saved_message);
+	   textView.append("Shared preferences:"+saved_message+"\n");
 	   MainActivity.setDefaults("saved",saved_message+message , this);
-	   
-
-	    // Set the text view as the activity layout in case of create
-	    //setContentView(textView);
+	 
+	   try {
+       	FileInputStream input = this.openFileInput(MainActivity.filename);
+       	InputStreamReader isr = new InputStreamReader(input);
+       	BufferedReader buffer = new BufferedReader(isr);
+       	StringBuilder sb = new StringBuilder();
+       	file_content=buffer.readLine();
+       	while ((line = buffer.readLine()) != null) {
+            sb.append(line);
+        }
+       } catch (Exception e) {
+     	  e.printStackTrace();
+     	}
+	   textView.append("\n File internal storage: "+line);
+	    
 	}
 
 	/**

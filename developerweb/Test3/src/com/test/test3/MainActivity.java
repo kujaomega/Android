@@ -1,5 +1,11 @@
 package com.test.test3;
 
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.InputStreamReader;
+
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.app.Activity;
@@ -9,14 +15,33 @@ import android.content.SharedPreferences;
 import android.view.Menu;
 import android.view.View;
 import android.widget.EditText;
+import android.widget.TextView;
+
 
 public class MainActivity extends Activity {
 	public final static String EXTRA_MESSAGE = "com.test.myfirstapp.Message";
-
+	public static String filename = "saved_message.txt";
+	FileOutputStream outputStream;
+	String file_content;
+	
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        
+        File file = new File(this.getFilesDir(), filename);
+        
+        try {
+        	  outputStream = openFileOutput(filename, Context.MODE_PRIVATE);
+        	  outputStream.write("Hello_world".getBytes());
+        	  outputStream.close();
+        	} catch (Exception e) {
+        	  e.printStackTrace();
+        	}
+        
+        
+        
+        
     }
 
 
@@ -39,6 +64,16 @@ public class MainActivity extends Activity {
     	String message = editText.getText().toString();
     	
     	setDefaults("saved", message, this);
+    	
+    	try {
+    		  outputStream = openFileOutput(filename, Context.MODE_PRIVATE);
+    		  outputStream.write(message.getBytes());
+    		  outputStream.close();
+    		} catch (Exception e) {
+    		  e.printStackTrace();
+    		}
+    	
+    	
     	
     	intent.putExtra(EXTRA_MESSAGE,  message);
     	startActivity(intent);
